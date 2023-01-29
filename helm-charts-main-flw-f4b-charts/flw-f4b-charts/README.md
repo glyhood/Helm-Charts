@@ -1,0 +1,1 @@
+The packaged chart in xxx.tgz format is pushed to the Gitlab Package registry.

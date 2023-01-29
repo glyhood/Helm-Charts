@@ -1,0 +1,4 @@
+apiVersion: v2
+name: flw-f4b-cluster
+version: 0.1.0
+description: Updated ingress with optional whitelist source configuration
