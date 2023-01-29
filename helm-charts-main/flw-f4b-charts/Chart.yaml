@@ -1,4 +1,4 @@
 apiVersion: v2
-name: flw-f4b-cluster
+name: demo-cluster-chart
 version: 0.1.0
 description: Updated ingress with optional whitelist source configuration

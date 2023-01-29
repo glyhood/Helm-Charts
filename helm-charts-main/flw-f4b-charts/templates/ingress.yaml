@@ -8,12 +8,12 @@ metadata:
     {{- toYaml . | nindent 4 }}
   {{- end }}
     {{- if .Values.ingress.allow_only_whitelist }}
-    nginx.ingress.kubernetes.io/whitelist-source-range: '52.214.189.87/32,15.197.183.194/32,54.73.197.19/32,52.211.9.204/32,54.73.107.4/32,54.220.144.62/32,54.229.248.67/32,54.194.204.17/32,52.31.13.245/32,52.209.154.143/32,54.217.33.63/32,63.33.152.16/32,54.154.184.168/32,52.18.161.235/32,13.36.142.202/32,18.135.189.152/32,34.251.27.189/32,34.243.115.232/32,34.252.81.31/32'
+    nginx.ingress.kubernetes.io/whitelist-source-range: ''
     {{- end }}
 spec:
   ingressClassName: {{ .Values.ingress.ingressClassName | default "nginx"}}
   rules:
-    - host: "{{ .Values.ingress.host }}.f4b-flutterwave.com"
+    - host: "{{ .Values.ingress.host }}.demo.com"
       http:
         paths:
           - backend:
