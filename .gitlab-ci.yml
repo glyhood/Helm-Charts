@@ -1,0 +1,97 @@
+default:
+  image: glyhood/ci-image:latest
+  tags:
+    - ekscluster
+
+variables:
+  helm_registry_name: xyz-gitlab-helm-registry
+
+stages:
+  - test
+  - release
+
+.helm_registry_login: &helm_registry_login
+  - helm plugin install https://github.com/chartmuseum/helm-push
+  - helm repo add --username ${GIT_USER} --password ${GIT_TOKEN} xyz-gitlab-helm-registry https://gitlab.com/api/v4/projects/123/packages/helm/stable
+
+test_dev_chart:
+  stage: test
+  script:
+    - echo "Rendering test template"
+    - helm template -f test_values.yaml xyz-dev-charts
+  only:
+    changes:
+      - /xyz-dev-charts/*
+
+test_f4b_chart:
+  stage: test
+  script:
+    - echo "Rendering test template"
+    - helm template -f test_values.yaml xyz-f4b-charts
+  only:
+    changes:
+      - /xyz-f4b-charts/*
+
+test_acquire_chart:
+  stage: test
+  script:
+    - echo "Rendering test template"
+    - helm template -f test_values.yaml flw-acquire-charts
+  only:
+    changes:
+      - /xyz-acquire-charts/*
+
+test_generic_chart:
+  stage: test
+  script:
+    - echo "Rendering test template"
+    - helm template -f test_values.yaml default-xyz-chart
+  only:
+    changes:
+      - /default-xyz-chart/*
+
+# The use of tags can be explored in the future
+
+release_dev:
+  stage: release
+#  only: [tags]
+  script:
+    - *helm_registry_login
+    - PACKAGE=`helm package xyz-dev-charts | cut -d ":" -f 2`
+    - helm cm-push ${PACKAGE} ${helm_registry_name}
+  only:
+    changes:
+      - /xyz-dev-charts/*
+
+release_f4b:
+  stage: release
+#  only: [tags]
+  script:
+    - *helm_registry_login
+    - PACKAGE=`helm package xyz-f4b-charts | cut -d ":" -f 2`
+    - helm cm-push ${PACKAGE} ${helm_registry_name}
+  only:
+    changes:
+      - /xyz-f4b-charts/*
+
+release_acquire:
+  stage: release
+#  only: [tags]
+  script:
+    - *helm_registry_login
+    - PACKAGE=`helm package xyz-acquire-charts | cut -d ":" -f 2`
+    - helm cm-push ${PACKAGE} ${helm_registry_name}
+  only:
+    changes:
+      - /xyz-acquire-charts/*
+
+release_generic:
+  stage: release
+#  only: [tags]
+  script:
+    - *helm_registry_login
+    - PACKAGE=`helm package default-xyz-chart | cut -d ":" -f 2`
+    - helm cm-push ${PACKAGE} ${helm_registry_name}
+  only:
+    changes:
+      - /default-xyz-chart/*
